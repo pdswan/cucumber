@@ -79,8 +79,7 @@ module Cucumber
       end
 
       def all_files_to_load
-        requires = @options[:require].empty? ? require_dirs : @options[:require]
-        files = requires.map do |path|
+        files = require_dirs.map do |path|
           path = path.gsub(/\\/, '/') # In case we're on windows. Globs don't work with backslashes.
           path = path.gsub(/\/$/, '') # Strip trailing slash.
           File.directory?(path) ? Dir["#{path}/**/*"] : path
@@ -184,8 +183,12 @@ module Cucumber
       end
 
     private
+      def default_features_paths
+        ["features"]
+      end
+
       def with_default_features_path(paths)
-        return ['features'] if paths.empty?
+        return default_features_paths if paths.empty?
         paths
       end
 
@@ -217,10 +220,12 @@ module Cucumber
       end
 
       def require_dirs
-        feature_dirs + Dir['vendor/{gems,plugins}/*/cucumber']
+        if @options[:require].empty?
+          default_features_paths + Dir['vendor/{gems,plugins}/*/cucumber']
+        else
+          @options[:require]
+        end
       end
-
     end
-
   end
 end

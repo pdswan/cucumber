@@ -91,8 +91,8 @@ module Cucumber
           ].join("\n")
           opts.on("-r LIBRARY|DIR", "--require LIBRARY|DIR",
             "Require files before executing the features. If this",
-            "option is not specified, all *.rb files that are",
-            "siblings or below the features will be loaded auto-",
+            "option is not specified, all *.rb files under",
+            "the \"features\" directory will be loaded auto-",
             "matically. Automatic loading is disabled when this",
             "option is specified, and all loading becomes explicit.",
             "Files under directories named \"support\" are always",
