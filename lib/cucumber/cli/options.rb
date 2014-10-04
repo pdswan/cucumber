@@ -4,7 +4,6 @@ require 'cucumber/rb_support/rb_language'
 
 module Cucumber
   module Cli
-
     class Options
       INDENT = ' ' * 53
       BUILTIN_FORMATS = {

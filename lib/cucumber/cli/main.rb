@@ -62,6 +62,10 @@ module Cucumber
       def configuration
         @configuration ||= Configuration.new(@out, @err).tap do |configuration|
           configuration.parse!(@args)
+          # TODO
+          # need to set Cucumber.use_full_backtrace
+          # to configuration.use_full_backtrace?
+          # either here or when configuring the runtime
           Cucumber.logger = configuration.log
         end
       end
