@@ -2,26 +2,26 @@ module Cucumber
   module Cli
     module BetterOptions
       module OptionDefinitions
-        class Snippets
+        class NoProfile
           include Values::Single
 
           def initialize(*); end
 
-          def key
-            :snippets
-          end
-
           def to_option_parser_args
             [
               :on,
-              "-i",
-              "--no-snippets",
-              "Don't print snippets for pending steps."
+              "-P",
+              "--no-profile",
+              "Disables all profile loading to avoid using the 'default' profile."
             ]
           end
 
+          def key
+            :disable_profile_loading
+          end
+
           def default
-            true
+            false
           end
         end
       end

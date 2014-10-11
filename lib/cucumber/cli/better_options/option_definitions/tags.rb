@@ -3,11 +3,9 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class Tags
-          def initialize(*); end
+          include Values::Array
 
-          def base_value
-            []
-          end
+          def initialize(*); end
 
           def to_option_parser_args
             [
@@ -32,12 +30,12 @@ module Cucumber
             ]
           end
 
-          def append(existing, value)
-            existing << value
-          end
-
           def key
             :tag_expressions
+          end
+
+          def default
+            []
           end
         end
       end

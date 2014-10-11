@@ -3,6 +3,8 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class Formats
+          include Values::Array
+
           INDENT = ' ' * 53
           FORMATS = {
             'html'        => ['Cucumber::Formatter::Html',        'Generates a nice looking HTML report.'],
@@ -42,11 +44,11 @@ module Cucumber
           end
 
           def append(existing, value)
-            existing << [value, output_stream]
+            super(existing, [value, output_stream])
           end
 
-          def base_value
-            []
+          def default
+            ["pretty", output_stream]
           end
 
           private

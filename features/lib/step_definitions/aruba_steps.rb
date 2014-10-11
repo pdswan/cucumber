@@ -1,5 +1,6 @@
 Given('a Gemfile with:') do |content|
   path = File.expand_path(current_dir + "/Gemfile")
+  STDERR.puts "path: #{path}"
   write_file path, content
   set_env "BUNDLE_GEMFILE", path
 end

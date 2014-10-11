@@ -3,14 +3,12 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class Backtrace
+          include Values::Single
+
           def initialize(*); end
 
           def key
             :use_full_backtrace
-          end
-
-          def base_value
-            false
           end
 
           def to_option_parser_args
@@ -22,8 +20,12 @@ module Cucumber
             ]
           end
 
-          def append(existing, value)
-            value
+          def unset?(existing)
+            existing == base_value
+          end
+
+          def default
+            false
           end
         end
       end

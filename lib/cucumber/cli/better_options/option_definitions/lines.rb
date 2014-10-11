@@ -3,14 +3,12 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class Lines
+          include Values::Single
+
           def initialize(*); end
 
           def key
             :lines
-          end
-
-          def base_value
-            nil
           end
 
           def to_option_parser_args
@@ -22,8 +20,8 @@ module Cucumber
             ]
           end
 
-          def append(existing, value)
-            value
+          def default
+            nil
           end
         end
       end

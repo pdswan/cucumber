@@ -12,23 +12,51 @@ module Cucumber
     class Configuration
       include Constantize
 
-      attr_reader :out_stream
-
-      def initialize(out_stream = STDOUT, error_stream = STDERR)
-        @out_stream   = out_stream
-        @error_stream = error_stream
-        @options = Options.new(@out_stream, @error_stream, :default_profile => 'default')
+      def self.build(args, output_stream = STDOUT)
+        new(
+          BetterOptions.from_args(args, output_stream).tap do |options|
+            if options[:disable_profile_loading]
+              output_stream.puts "Disabling profiles..."
+            else
+              options[:profiles] << "default" if options[:profiles].empty?
+              options[:profiles].inject(options) do |options, profile|
+                BetterOptions.merge(
+                  options,
+                  BetterOptions.from_profile(profile)
+                )
+              end
+            end
+          end.tap do |options_with_profiles|
+            BetterOptions.add_defaults(options_with_profiles)
+          end
+        )
       end
 
-      def parse!(args)
-        @args = args
-        @options.parse!(args)
+      attr_reader :out_stream
+
+      # def initialize(out_stream = STDOUT, error_stream = STDERR)
+        # @out_stream   = out_stream
+        # @error_stream = error_stream
+        # @options = Options.new(@out_stream, @error_stream, :default_profile => 'default')
+      # end
+
+      def initialize(options, out_stream = STDOUT)
+        @options = options
         arrange_formats
         raise("You can't use both --strict and --wip") if strict? && wip?
-        # todo: remove
         @options[:tag_expression] = Gherkin::TagExpression.new(@options[:tag_expressions])
         set_environment_variables
       end
+
+      # def parse!(args)
+        # @args = args
+        # @options.parse!(args)
+        # arrange_formats
+        # raise("You can't use both --strict and --wip") if strict? && wip?
+        # # todo: remove
+        # @options[:tag_expression] = Gherkin::TagExpression.new(@options[:tag_expressions])
+        # set_environment_variables
+      # end
 
       def verbose?
         @options[:verbose]
@@ -63,7 +91,7 @@ module Cucumber
       end
 
       def snippet_type
-        @options[:snippet_type] || :regexp
+        @options[:snippet_type] # || :regexp
       end
 
       def build_tree_walker(runtime)
@@ -206,7 +234,10 @@ module Cucumber
       end
 
       def arrange_formats
-        @options[:formats] << ['pretty', @out_stream] if @options[:formats].empty?
+        # TODO
+        # move to defaults
+        # @options[:formats] << ['pretty', @out_stream] if @options[:formats].empty?
+
         @options[:formats] = @options[:formats].sort_by{|f| f[1] == @out_stream ? -1 : 1}
         @options[:formats].uniq!
         streams = @options[:formats].map { |(_, stream)| stream }
@@ -220,6 +251,8 @@ module Cucumber
       end
 
       def require_dirs
+        # TODO
+        # move to defaults
         if @options[:require].empty?
           default_features_paths + Dir['vendor/{gems,plugins}/*/cucumber']
         else

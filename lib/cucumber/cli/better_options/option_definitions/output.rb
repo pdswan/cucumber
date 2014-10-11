@@ -3,11 +3,9 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class Output
-          def initialize(*); end
+          include Values::Array
 
-          def base_value
-            []
-          end
+          def initialize(*); end
 
           def to_option_parser_args
             [
@@ -22,6 +20,9 @@ module Cucumber
           end
 
           def append(existing, value)
+            # FIXME
+            # this value should just be set as an option
+            # configuration can apply it post defaults
             existing.tap do |existing|
               existing << ["pretty", nil] if existing.empty?
               existing.last[1] = value
@@ -30,6 +31,10 @@ module Cucumber
 
           def key
             :formats
+          end
+
+          def default
+            []
           end
         end
       end

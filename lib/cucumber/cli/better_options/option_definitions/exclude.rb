@@ -3,11 +3,9 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class Exclude
-          def initialize(*); end
+          include Values::Array
 
-          def base_value
-            []
-          end
+          def initialize(*); end
 
           def to_option_parser_args
             [
@@ -19,11 +17,15 @@ module Cucumber
           end
 
           def append(existing, value)
-            existing << Regexp.new(value)
+            super(existing, Regexp.new(value))
           end
 
           def key
             :excludes
+          end
+
+          def default
+            []
           end
         end
       end

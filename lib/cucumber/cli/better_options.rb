@@ -15,7 +15,7 @@ module Cucumber
         # IDEA
         # BetterOptions becomes Configuration
         # Configuration encompasses options, commands, and environment variables
-        def parse(original_args)
+        def parse(original_args, base_values = option_definitions.base_values)
           args = original_args.dup
 
           base_values.tap do |options|
@@ -58,10 +58,6 @@ module Cucumber
             [path, options[:lines]].compact.join(":")
           end
         end
-
-        def base_values
-          option_definitions.base_values
-        end
       end
 
       module_function
@@ -79,24 +75,34 @@ module Cucumber
           option_definitions(output_stream),
           command_definitions(output_stream)
         ).parse(args)
-
-        # merge profiles
-        # apply defaults
-        # option_definitions.inject(options) do |options, option_definition|
-          # option_definition.apply_default(options)
-        # end
       end
 
-      def merge(base, merge)
-
+      def merge(a, b)
+        { }.tap do |merged|
+          option_definitions.each do |definition|
+            merged.tap do |merged|
+              merged[definition.key] = definition.append(a[definition.key], b[definition.key])
+            end
+          end
+        end
       end
 
       def defaults
-
+        options_definitions.defaults
       end
 
       def from_profile(profile, profile_loader = ProfileLoader.new)
         from_args(profile_loader.args_from(profile))
+      end
+
+      def add_defaults(options)
+        options.tap do |options_with_defaults|
+          options_definitions.each do |definition|
+            if definition.unset?(options_with_defaults[definition.key])
+              options_with_defaults[definition.key] = definition.default
+            end
+          end
+        end
       end
     end
   end

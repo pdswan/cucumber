@@ -3,14 +3,12 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class SnippetType
+          include Values::Single
+
           def initialize(*); end
 
           def key
             :snippet_type
-          end
-
-          def base_value
-            nil
           end
 
           def to_option_parser_args
@@ -24,7 +22,11 @@ module Cucumber
           end
 
           def append(existing, value)
-            value.to_sym
+            super(existing, value.to_sym)
+          end
+
+          def default
+            :regexp
           end
         end
       end

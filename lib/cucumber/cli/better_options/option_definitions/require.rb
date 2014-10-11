@@ -3,11 +3,9 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class Require
-          def initialize(*); end
+          include Values::Array
 
-          def base_value
-            []
-          end
+          def initialize(*); end
 
           def to_option_parser_args
             [
@@ -26,7 +24,7 @@ module Cucumber
           end
 
           def append(existing, value)
-            (existing << value).tap do |_|
+            super.tap do |_|
               # TODO
               # this should go somewhere else
               if(Cucumber::JRUBY && File.directory?(value))
@@ -38,6 +36,10 @@ module Cucumber
 
           def key
             :require
+          end
+
+          def default
+            ["features"]
           end
         end
       end

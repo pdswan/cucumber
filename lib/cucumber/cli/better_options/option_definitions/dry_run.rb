@@ -3,14 +3,12 @@ module Cucumber
     module BetterOptions
       module OptionDefinitions
         class DryRun
+          include Values::Single
+
           def initialize(*); end
 
           def key
             :dry_run
-          end
-
-          def base_value
-            false
           end
 
           def to_option_parser_args
@@ -22,8 +20,8 @@ module Cucumber
             ]
           end
 
-          def append(existing, value)
-            value
+          def default
+            false
           end
         end
       end
